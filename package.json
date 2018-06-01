@@ -1,0 +1,27 @@
+{
+  "name": "warbler-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "cd C:/data/mongodb & start mongod ",
+    "start": "nodemon index.js "
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^2.0.1",
+    "body-parser": "^1.18.2",
+    "ccxt": "^1.13.123",
+    "cors": "^2.8.4",
+    "deasync": "^0.1.12",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.0",
+    "mongoose": "^5.0.10",
+    "nan": "^2.10.0",
+    "node-fetch": "^2.1.2"
+  }
+}
