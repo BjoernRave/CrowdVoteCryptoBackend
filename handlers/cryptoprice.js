@@ -54,6 +54,8 @@ async function fetchCryptodata() {
   } catch (err) {
     console.log(err);
   }
+  console.log(cryptodataarray.length);
+
   if (cryptodataarray.length > 1) {
     let coingecko = cryptodataarray[2].concat(cryptodataarray[3]);
 
@@ -99,7 +101,7 @@ async function fetchCryptodata() {
     cryptostore = { ...cryptostore };
     // db.CryptoPrice.create({ currency: cryptostore });
   } else {
-    fetchCryptodata();
+    log("failed fetching crypto data");
   }
 }
 
