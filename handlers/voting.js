@@ -2,6 +2,15 @@ const db = require("../models");
 
 let votes = {};
 
+async function getVotesfromDB() {
+  let votes2 = await db.Votes.find()
+    .sort({ _id: -1 })
+    .limit(1);
+
+  votes = votes2[0].votes;
+}
+getVotesfromDB();
+
 exports.handleVoting = async function(req, res, next) {
   try {
     if (typeof votes[req.body.symbol] === "undefined") {
@@ -22,7 +31,9 @@ exports.handleVoting = async function(req, res, next) {
         voteResult: result
       };
     }
-
+    db.Votes.create({
+      votes: votes
+    });
     return res.status(200).json(votes);
   } catch (err) {
     return next(err);

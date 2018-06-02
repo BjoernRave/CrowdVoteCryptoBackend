@@ -54,9 +54,8 @@ async function fetchCryptodata() {
   } catch (err) {
     console.log(err);
   }
-  console.log(cryptodataarray.length);
 
-  if (cryptodataarray.length > 1) {
+  try {
     let coingecko = cryptodataarray[2].concat(cryptodataarray[3]);
 
     coingecko = await Object.values(coingecko);
@@ -99,9 +98,15 @@ async function fetchCryptodata() {
       cryptostore.push({ price, symbol });
     });
     cryptostore = { ...cryptostore };
+    db.CryptoPrice.create({ currency: cryptodata });
     // db.CryptoPrice.create({ currency: cryptostore });
-  } else {
-    log("failed fetching crypto data");
+  } catch (error) {
+    let data = await db.CryptoPrice.find()
+      .sort({ _id: -1 })
+      .limit(1);
+
+    cryptodata = data[0].currency;
+    console.log("Accessing backup Data");
   }
 }
 
