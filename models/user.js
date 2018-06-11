@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  profileImageUrl: {
-    type: String
+  voted: {
+    type: Object
   },
   messages: [
     {

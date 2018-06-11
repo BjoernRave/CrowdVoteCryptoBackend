@@ -2,8 +2,12 @@ const mongoose = require("mongoose");
 
 const VoteSchema = mongoose.Schema(
   {
-    votes: {
-      type: Object,
+    vote: {
+      type: Number,
+      required: true
+    },
+    symbol: {
+      type: String,
       required: true
     }
   },

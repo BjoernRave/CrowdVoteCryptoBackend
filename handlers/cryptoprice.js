@@ -82,8 +82,7 @@ async function fetchCryptodata() {
           coinmarketid: val.id,
           name: val.name,
           rank: val.rank,
-          symbol: val.symbol,
-          volume_24h: val.quotes.USD.volume_24h
+          symbol: val.symbol
         };
       })
       .sort((a, b) => a.rank - b.rank)
