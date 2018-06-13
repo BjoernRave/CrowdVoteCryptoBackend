@@ -14,7 +14,7 @@ const TagSchema = new mongoose.Schema({
     required: true
   },
   votes: {
-    type: Number,
+    type: Array,
     required: true
   }
 });

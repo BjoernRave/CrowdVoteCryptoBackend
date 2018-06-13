@@ -37,20 +37,23 @@ exports.signin = async function(req, res, next) {
 
 exports.signup = async function(req, res, next) {
   try {
-    let user = await db.User.create(req.body);
-    let { id, username, profileImageUrl } = user;
+    let user = await db.User.create({
+      email: req.body.email,
+      password: req.body.password,
+      username: req.body.username,
+      voted: { BTC: 0 }
+    });
+    let { id, username } = user;
     let token = jwt.sign(
       {
         id,
-        username,
-        profileImageUrl
+        username
       },
       process.env.SECRET_KEY
     );
     return res.status(200).json({
       id,
       username,
-      profileImageUrl,
       token
     });
   } catch (err) {

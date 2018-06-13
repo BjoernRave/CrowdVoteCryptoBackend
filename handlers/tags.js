@@ -36,11 +36,18 @@ exports.removeTag = async function(req, res, next) {
 
 exports.voteTag = async function(req, res, next) {
   try {
-    const tag = await db.Tags.findByIdAndUpdate(req.params.id, {
-      votes: req.body.vote
-    });
-    console.log(req.body.vote);
-    return res.status(200).json(tag);
+    const tag = await db.Tags.findById(req.params.id);
+    console.log(req.body.user);
+    if (!tag.votes.includes(req.body.user)) {
+      const newTag = await db.Tags.findByIdAndUpdate(req.params.id, {
+        votes: [...tag.votes, req.body.user]
+      });
+      console.log(newTag);
+      return res.status(200).json(newTag);
+    } else {
+      console.log("User already voted that tag");
+      return res.status(304).json("User already voted that tag");
+    }
   } catch (err) {
     return next(err);
   }

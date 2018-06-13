@@ -87,7 +87,8 @@ async function fetchCryptodata() {
       })
       .sort((a, b) => a.rank - b.rank)
       .filter(val => val.coingecko_score !== undefined);
-
+    delete combinedData.market_data.high_24h;
+    delete combinedData.market_data.low_24h;
     cryptodata = combinedData;
 
     let cryptostore = [];

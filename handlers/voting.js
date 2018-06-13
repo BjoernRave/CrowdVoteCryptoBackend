@@ -66,7 +66,7 @@ exports.getVotes = async function(req, res, next) {
   }
 };
 
-exports.handleVoting = async function(req, res, next) {
+exports.handleVoting2 = async function(req, res, next) {
   try {
     let newVote = db.Votes.create({
       vote: req.body.amount,
@@ -78,25 +78,31 @@ exports.handleVoting = async function(req, res, next) {
   }
 };
 
-exports.handleVoting2 = async function(req, res, next) {
+exports.handleVoting = async function(req, res, next) {
   try {
-    let lastvote = await db.Votes.findById(req.body.user);
-    if (lastvote < new Date() - 12 * 60 * 60 * 1000) {
-      let newVote = db.Votes.create({
+    let lastvote = await db.User.findById(req.body.id);
+    console.log(lastvote.voted[req.body.symbol]);
+    if (
+      lastvote.voted[req.body.symbol] === undefined ||
+      lastvote.voted[req.body.symbol] < new Date() - 12 * 60 * 60 * 1000
+    ) {
+      let newVote = await db.Votes.create({
         vote: req.body.amount,
         symbol: req.body.symbol
       });
-      db.User.findByIdAndUpdate(req.body.user, {
-        voted: { [req.body.symbol]: new Date() }
+      let updateduser = await db.User.findByIdAndUpdate(req.body.id, {
+        voted: { ...lastvote.voted, [req.body.symbol]: new Date() }
       });
+
       console.log("Vote succeeded");
       return res.status(200).json(newVote);
     } else {
       console.log("Vote failed");
 
-      return res.status(201).json("You already voted in the last 12 hours");
+      return res.status(304).json("You already voted in the last 12 hours");
     }
   } catch (err) {
+    console.log("vote failed and caught");
     return next(err);
   }
 };
