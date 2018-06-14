@@ -73,6 +73,8 @@ async function fetchCryptodata() {
         let newObject;
         let data;
         coingecko.forEach(val2 => {
+          delete val2.market_data.high_24h;
+          delete val2.market_data.low_24h;
           if (val2.symbol == val.symbol.toLowerCase()) {
             data = val2;
           }
@@ -87,8 +89,7 @@ async function fetchCryptodata() {
       })
       .sort((a, b) => a.rank - b.rank)
       .filter(val => val.coingecko_score !== undefined);
-    delete combinedData.market_data.high_24h;
-    delete combinedData.market_data.low_24h;
+
     cryptodata = combinedData;
 
     let cryptostore = [];
@@ -106,6 +107,7 @@ async function fetchCryptodata() {
       .limit(1);
 
     cryptodata = data[0].currency;
+    console.log(error);
     console.log("Accessing backup Data");
   }
 }
