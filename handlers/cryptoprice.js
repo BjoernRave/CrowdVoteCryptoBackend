@@ -1,6 +1,5 @@
 const db = require("../models");
 const fetch = require("node-fetch");
-const ccxt = require("ccxt");
 
 let cryptodata = {};
 let historicalData = {};

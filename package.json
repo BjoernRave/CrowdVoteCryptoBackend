@@ -11,9 +11,8 @@
   "keywords": [],
   "description": "",
   "dependencies": {
-    "bcrypt": "^2.0.1",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
-    "ccxt": "^1.13.123",
     "cors": "^2.8.4",
     "deasync": "^0.1.12",
     "dotenv": "^5.0.1",

@@ -41,9 +41,10 @@ exports.getVotes = async function(req, res, next) {
   try {
     let votes = {};
     let dbVotes = await db.Votes.find();
-    dbVotes.filter(vote => {
-      return vote.timestamp > new Date() - 24 * 60 * 60 * 1000;
-    });
+    // dbVotes = dbVotes.filter(vote => {
+    //   // console.log(vote.createdAt > new Date() - 24 * 60 * 60 * 1000);
+    //   return vote.createdAt > new Date() - 48 * 60 * 60 * 1000;
+    // });
     await dbVotes.forEach(voteObj => {
       if (votes[voteObj.symbol] === undefined) {
         votes[voteObj.symbol] = {

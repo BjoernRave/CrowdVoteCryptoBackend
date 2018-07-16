@@ -9,7 +9,10 @@ var options = {
 var mongodbUri =
   "mongodb://zarazas:fridolin96@ds245170.mlab.com:45170/crowdvotecrypto";
 
-mongoose.connect(mongodbUri, options);
+mongoose.connect(
+  mongodbUri,
+  options
+);
 var conn = mongoose.connection;
 
 conn.on("error", console.error.bind(console, "connection error:"));
