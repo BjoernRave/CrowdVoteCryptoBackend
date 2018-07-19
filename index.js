@@ -1,6 +1,6 @@
 require("dotenv").config();
-const express = require("express");
-const app = express();
+const app = require("express")();
+const http = require("http").Server(app);
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const errorHandler = require("./handlers/error");
@@ -12,8 +12,23 @@ const { loginRequired, ensureCorrectUser } = require("./middleware/auth");
 const db = require("./models");
 const PORT = process.env.PORT || 8081;
 const cryptoRoutes = require("./routes/cryptostats");
+// const io = require("socket.io")(http);
+const requestIp = require("request-ip");
+
 app.use(cors());
 app.use(bodyParser.json());
+app.use(requestIp.mw());
+
+// io.on("connection", client => {
+//   console.log("Someone Connected");
+//   client.on("subscribeToTimer", interval => {
+//     console.log("client is subscribing to timer with interval ", interval);
+//     setInterval(() => {
+//       client.emit("timer", new Date());
+//     }, interval);
+//   });
+// });
+// io.listen(8080);
 
 app.use("/api/auth", authRoutes);
 app.use(
@@ -22,6 +37,10 @@ app.use(
   ensureCorrectUser,
   messagesRoutes
 );
+
+app.get("/api/ip", (req, res, next) => {
+  return res.status(200).json({ ip: req.ip });
+});
 
 app.get("/api/messages/:symbol", async function(req, res, next) {
   try {
@@ -72,6 +91,6 @@ app.use(function(req, res, next) {
 
 app.use(errorHandler);
 
-app.listen(PORT, function() {
+http.listen(PORT, function() {
   console.log(`Server is starting on port ${PORT}`);
 });
