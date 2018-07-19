@@ -14,6 +14,7 @@ const PORT = process.env.PORT || 8081;
 const cryptoRoutes = require("./routes/cryptostats");
 // const io = require("socket.io")(http);
 const requestIp = require("request-ip");
+var net = require("net");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -39,7 +40,7 @@ app.use(
 );
 
 app.get("/api/ip", (req, res, next) => {
-  return res.status(200).json({ ip: req.ips });
+  return res.status(200).json({ ip: req.clientIp });
 });
 
 app.get("/api/messages/:symbol", async function(req, res, next) {

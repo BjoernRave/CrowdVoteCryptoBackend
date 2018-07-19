@@ -20,6 +20,7 @@
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.10",
     "nan": "^2.10.0",
+    "net": "^1.0.2",
     "node-fetch": "^2.1.2",
     "request-ip": "^2.1.1",
     "socket.io": "^2.1.1"
