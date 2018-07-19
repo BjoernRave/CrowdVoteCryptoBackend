@@ -39,7 +39,7 @@ app.use(
 );
 
 app.get("/api/ip", (req, res, next) => {
-  return res.status(200).json({ ip: req.ip });
+  return res.status(200).json({ ip: req.ips });
 });
 
 app.get("/api/messages/:symbol", async function(req, res, next) {
