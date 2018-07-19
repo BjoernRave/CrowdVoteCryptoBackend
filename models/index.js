@@ -22,5 +22,6 @@ module.exports.Message = require("./message");
 module.exports.CryptoPrice = require("./CryptoPrice");
 module.exports.Tags = require("./tags");
 module.exports.Votes = require("./votes");
+module.exports.ipUser = require("./ipUser");
 
 // process.env.MONGODB_URI || "mongodb://localhost/CryptoRateProject",

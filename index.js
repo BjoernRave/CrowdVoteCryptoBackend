@@ -14,7 +14,6 @@ const PORT = process.env.PORT || 8081;
 const cryptoRoutes = require("./routes/cryptostats");
 // const io = require("socket.io")(http);
 const requestIp = require("request-ip");
-var net = require("net");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -39,7 +38,11 @@ app.use(
   messagesRoutes
 );
 
-app.get("/api/ip", (req, res, next) => {
+app.get("/api/ip/:symbol", (req, res, next) => {
+  //check if IP exists
+  //if IP does not exist, create entry
+  //if IP exists, check if allowed to vote, if not send back bad res
+  console.log(req.params.symbol);
   return res.status(200).json({ ip: req.clientIp });
 });
 

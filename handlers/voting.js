@@ -67,22 +67,42 @@ exports.getVotes = async function(req, res, next) {
   }
 };
 
-exports.handleVoting2 = async function(req, res, next) {
-  try {
-    let newVote = db.Votes.create({
-      vote: req.body.amount,
-      symbol: req.body.symbol
-    });
-    return res.status(200).json(newVote);
-  } catch (err) {
-    return next(err);
-  }
-};
+// exports.handleVoting2 = async function(req, res, next) {
+//   try {
+//     let newVote = db.Votes.create({
+//       vote: req.body.amount,
+//       symbol: req.body.symbol
+//     });
+//     return res.status(200).json(newVote);
+//   } catch (err) {
+//     return next(err);
+//   }
+// };
 
 exports.handleVoting = async function(req, res, next) {
   try {
-    let lastvote = await db.User.findById(req.body.id);
-    console.log(lastvote.voted[req.body.symbol]);
+    let lastvote;
+    if (req.body.id !== "IP") {
+      lastvote = await db.User.findById(req.body.id);
+      let Ipuser = await db.ipUser.findOne({ ip: req.clientIp });
+
+      if (
+        Ipuser !== null &&
+        Ipuser.voted[req.body.symbol] > new Date() - 12 * 60 * 60 * 1000
+      ) {
+        console.log("Vote failed, because user already voted without account");
+        return res.json("VoteFailed");
+      }
+    } else {
+      lastvote = await db.ipUser.findOne({ ip: req.clientIp });
+      if (lastvote === null) {
+        lastvote = await db.ipUser.create({
+          ip: req.clientIp,
+          voted: {}
+        });
+      }
+    }
+    // console.log(lastvote.voted[req.body.symbol]);
     if (
       lastvote.voted[req.body.symbol] === undefined ||
       lastvote.voted[req.body.symbol] < new Date() - 12 * 60 * 60 * 1000
@@ -91,19 +111,29 @@ exports.handleVoting = async function(req, res, next) {
         vote: req.body.amount,
         symbol: req.body.symbol
       });
-      let updateduser = await db.User.findByIdAndUpdate(req.body.id, {
-        voted: { ...lastvote.voted, [req.body.symbol]: new Date() }
-      });
+      if (req.body.id === "IP") {
+        await db.ipUser.findOneAndUpdate(
+          { ip: req.clientIp },
+          {
+            voted: { ...lastvote.voted, [req.body.symbol]: new Date() }
+          }
+        );
+      } else {
+        await db.User.findByIdAndUpdate(req.body.id, {
+          voted: { ...lastvote.voted, [req.body.symbol]: new Date() }
+        });
+      }
 
       console.log("Vote succeeded");
       return res.status(200).json(newVote);
     } else {
       console.log("Vote failed");
 
-      return res.status(304).json("You already voted in the last 12 hours");
+      return res.json("VoteFailed");
     }
   } catch (err) {
     console.log("vote failed and caught");
+    return res.status(501).json("Problem with Voting");
     return next(err);
   }
 };

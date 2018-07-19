@@ -37,10 +37,17 @@ exports.removeTag = async function(req, res, next) {
 exports.voteTag = async function(req, res, next) {
   try {
     const tag = await db.Tags.findById(req.params.id);
-    console.log(req.body.user);
-    if (!tag.votes.includes(req.body.user)) {
+    let user;
+    if (req.body.user === "IP") {
+      user = req.clientIp;
+    } else {
+      user = req.body.user;
+    }
+    console.log(user);
+
+    if (!tag.votes.includes(user)) {
       const newTag = await db.Tags.findByIdAndUpdate(req.params.id, {
-        votes: [...tag.votes, req.body.user]
+        votes: [...tag.votes, user]
       });
       console.log(newTag);
       return res.status(200).json(newTag);

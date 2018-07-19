@@ -16,7 +16,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  IPs: {
+    type: Array
+  },
   voted: {
+    type: Object
+  },
+  tagvoted: {
     type: Object
   },
   messages: [
