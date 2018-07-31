@@ -1,5 +1,6 @@
 const db = require("../models");
 const fetch = require("node-fetch");
+const fs = require("fs");
 
 let cryptodata = {};
 let historicalData = {};
@@ -47,9 +48,9 @@ async function fetchCryptodata() {
       .catch(err => console.log(err));
 
   try {
-    await Promise.all(urls.map(grabContent)).then(() =>
-      console.log(`Urls ${urls} were grabbed`)
-    );
+    await Promise.all(urls.map(grabContent)).then(() => {
+      // console.log(`Urls ${urls} were grabbed`);
+    });
   } catch (err) {
     console.log(err);
   }
@@ -67,15 +68,15 @@ async function fetchCryptodata() {
 
     let coinmarketcap = coinmarketcap1.concat(coinmarketcap2);
 
+    //needs fixing
     let combinedData = coinmarketcap
       .map(val => {
-        let newObject;
         let data;
         coingecko.forEach(val2 => {
-          delete val2.market_data.high_24h;
-          delete val2.market_data.low_24h;
           if (val2.symbol == val.symbol.toLowerCase()) {
             data = val2;
+            delete val2.market_data.high_24h;
+            delete val2.market_data.low_24h;
           }
         });
         return {
@@ -87,7 +88,7 @@ async function fetchCryptodata() {
         };
       })
       .sort((a, b) => a.rank - b.rank)
-      .filter(val => val.coingecko_score !== undefined);
+      .filter(val => val.localization !== undefined);
 
     cryptodata = combinedData;
 
@@ -98,8 +99,18 @@ async function fetchCryptodata() {
       cryptostore.push({ price, symbol });
     });
     cryptostore = { ...cryptostore };
+    console.log(new Date().toTimeString());
+    console.log("received Cryptodata from API");
     db.CryptoPrice.create({ currency: cryptodata });
-    // db.CryptoPrice.create({ currency: cryptostore });
+
+    const oneDay = new Date();
+    oneDay.setHours(oneDay.getHours() - 24);
+    db.CryptoPrice.remove({ timestamp: { $lt: oneDay } }, function(
+      err,
+      result
+    ) {
+      console.log("Successfully removed old entries");
+    });
   } catch (error) {
     let data = await db.CryptoPrice.find()
       .sort({ _id: -1 })
