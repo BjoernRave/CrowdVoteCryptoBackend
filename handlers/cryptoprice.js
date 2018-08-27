@@ -3,10 +3,8 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 
 let cryptodata = {};
-let historicalData = {};
 
 async function fetchCryptodata2() {
-  let cryptostore = {};
   let coingecko = new Promise(function(resolve, reject) {
     return fetch(
       "https://api.coingecko.com/api/v3/coins?order=gecko_desc&per_page=250"
@@ -48,9 +46,7 @@ async function fetchCryptodata() {
       .catch(err => console.log(err));
 
   try {
-    await Promise.all(urls.map(grabContent)).then(() => {
-      // console.log(`Urls ${urls} were grabbed`);
-    });
+    await Promise.all(urls.map(grabContent));
   } catch (err) {
     console.log(err);
   }
@@ -91,30 +87,16 @@ async function fetchCryptodata() {
       .filter(val => val.localization !== undefined);
 
     cryptodata = combinedData;
-
-    let cryptostore = [];
-    cryptodata.forEach(val => {
-      const price = val.market_data.current_price.usd;
-      const symbol = val.symbol;
-      cryptostore.push({ price, symbol });
-    });
-    cryptostore = { ...cryptostore };
-    console.log(new Date().toTimeString());
-    console.log("received Cryptodata from API");
-    db.CryptoPrice.create({ currency: cryptodata });
-
-    const oneDay = new Date();
-    oneDay.setHours(oneDay.getHours() - 24);
-    db.CryptoPrice.remove({ timestamp: { $lt: oneDay } }, function(
-      err,
-      result
-    ) {
-      console.log("Successfully removed old entries");
+    console.log(
+      "received Cryptodata from API at: " + new Date().toTimeString()
+    );
+    fs.writeFile("./prices.json", JSON.stringify(cryptodata, null, 2), err => {
+      if (err) {
+        console.log(err);
+      }
     });
   } catch (error) {
-    let data = await db.CryptoPrice.find()
-      .sort({ _id: -1 })
-      .limit(1);
+    let data = JSON.parse(fs.readFileSync("./prices.json"));
 
     cryptodata = data[0].currency;
     console.log(error);
@@ -146,13 +128,11 @@ exports.getHistoricalData = async function(req, res, next) {
     console.log(req.params.coin);
 
     let data = await fetchHistoricalData(req.params.coin, req.params.days);
-    // console.log(data);
     return res.status(200).json(data);
   } catch (err) {
     return next(err);
   }
 };
-//  data={[{ x: 1, y: 30 }, { x: 2, y: 5 }, { x: 3, y: 15 }]}
 
 exports.ApiFetchInterval = fetchCryptodata();
 setInterval(() => {

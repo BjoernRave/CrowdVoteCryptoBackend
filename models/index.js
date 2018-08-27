@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 // mongoose.set("debug", true);
 mongoose.Promise = Promise;
 var options = {
-  // server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
-  // replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }
+  // server: { keepAlive: 300000, connectTimeoutMS: 30000 },
+  // replset: { keepAlive: 300000, connectTimeoutMS: 30000 }
 };
 
 var mongodbUri =
