@@ -1,10 +1,10 @@
 {
-  "name": "warbler-server",
+  "name": "CrowdVoteCryptoBackend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js "
+    "start": "node index.js "
   },
   "author": "",
   "license": "ISC",
@@ -22,8 +22,16 @@
     "nan": "^2.10.0",
     "net": "^1.0.2",
     "node-fetch": "^2.1.2",
-    "nodemon": "^1.18.3",
-    "request-ip": "^2.1.1",
-    "socket.io": "^2.1.1"
+    "request-ip": "^2.1.1"
+  },
+  "now": {
+    "name": "CrowdVoteCryptoBackend",
+    "alias": "cwcserver.now.sh",
+    "scale": {
+      "bru1": {
+        "min": 1,
+        "max": "auto"
+      }
+    }
   }
 }
